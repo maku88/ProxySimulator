@@ -1,10 +1,10 @@
 package pl.mobiid.server.tester.ProxySimulator;
 
+import org.apache.log4j.Logger;
+import pl.mobiid.server.tester.ProxySimulator.config.SysConfig;
 import pl.mobiid.server.tester.ProxySimulator.simulation.Simulator;
-import pl.mobiid.server.tester.ProxySimulator.simulation.data.DataReader;
-import pl.mobiid.server.tester.ProxySimulator.simulation.data.FileReader;
-import pl.mobiid.server.tester.ProxySimulator.simulation.data.Sections;
-import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.*;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.DBReader;
 import pl.mobiid.server.tester.ProxySimulator.threads.Conector;
 import pl.mobiid.server.tester.ProxySimulator.threads.NotifyingThread;
 import pl.mobiid.server.tester.ProxySimulator.threads.ThreadCompleteListener;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Hello world!
@@ -27,36 +28,53 @@ public class App
     private static String enpointLocal = "http://localhost:8080/rest/open/actions";
     private static String endpointTest = "http://morrigan.mobi-id.pl:8080/rest/open/actions";
     private static String endpointProd = "http://smarttouch.mobi-id.pl/rest/open/actions";
-    private static DataReader reader = new FileReader("tagList.txt");
+    private static DataReader reader = new DBReader();
+    private static Logger log = Logger.getLogger(App.class);
+
 
     public static void main( String[] args )
     {
 
-        System.setProperty("http.proxySet", "true");
-        System.setProperty("http.proxyHost", "127.0.0.1");
-        System.setProperty("http.proxyPort", "10000");
+//        System.setProperty("http.proxySet", "true");
+//        System.setProperty("http.proxyHost", "127.0.0.1");
+//        System.setProperty("http.proxyPort", "10000");
 
         String endpoint = null;
 
-        if(args.length == 0 ) System.out.println("niepoprawny argument moze byc tylko prod albo test");
+        if(args.length < 5 ) log.error("niepoprawny argument ! podaj [hostSerwera] [hostProxy:port ] [adresBazy] [iloscZnacznikow] [iloscRequestow]");
         else if(args[0].equals("prod")) endpoint = endpointProd;
         else if (args[0].equals("test")) endpoint = endpointTest;
         else if(args[0].equals("local")) endpoint = enpointLocal;
-        else System.out.println("niepoprawny argument moze byc tylko prod albo test");
+        else {
+            endpoint = "http://" + args[0] + ":8080/rest/open/actions";
 
-        System.out.println("endpoint : " + endpoint );
+            String[] hostAndProt = args[1].split(":");
+
+            SysConfig.proxyHost = hostAndProt[0];
+            SysConfig.proxyPort= Integer.parseInt(hostAndProt[1]);
+
+        }
+
+        SysConfig.dbAddress = args[2];
+        SysConfig.tagNumber = Integer.parseInt(args[3]);
+        SysConfig.numberOfRequests = Integer.parseInt(args[4]);
+
+
+        log.info("---------------");
+        log.info("SIMULATOR START");
+        log.info(SysConfig.printConfig());
 
 
         if(endpoint != null ) {
-            Simulator simulator = new Simulator(reader.read());
+            Simulator simulator = new Simulator(reader, SysConfig.tagNumber );
             simulator.prepareData();
 
             ThreadCompleteListener listener = new ThreadListener();
             int x = 0;
-            while (x < 1000) {
+            while (x < SysConfig.numberOfRequests) {
 //                Sections section = simulator.getRandomSection();
                 Tag tag = simulator.getRandomTag();
-                System.out.println("Wylosowałem sekcje : " + tag.getTagId());
+                log.info("TAG : " + tag.getTagId() + " " + tag.getProbability());
                 List<Tag> tagList = new ArrayList<Tag>();
                 tagList.add(tag);
                 // We will create 500 threads

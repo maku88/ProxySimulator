@@ -1,4 +1,7 @@
-package pl.mobiid.server.tester.ProxySimulator.simulation.data;
+package pl.mobiid.server.tester.ProxySimulator.simulation.data.files;
+
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.DataWriter;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.SimulationResult;
 
 import java.io.*;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
  * Time: 15:06
  * To change this template use File | Settings | File Templates.
  */
-public class FileWriter implements DataWriter{
+public class FileWriter implements DataWriter {
 
     private final String fileName;
 

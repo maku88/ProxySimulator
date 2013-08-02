@@ -1,11 +1,12 @@
 package pl.mobiid.server.tester.ProxySimulator.simulation;
 
-import org.junit.Before;
 import org.junit.Test;
-import pl.mobiid.server.tester.ProxySimulator.simulation.data.Sections;
+import pl.mobiid.server.tester.ProxySimulator.config.SysConfig;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.DBReader;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
 
-import java.util.ArrayList;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -19,31 +20,28 @@ import static org.junit.Assert.*;
  */
 public class SimulatorTest {
 
-    List<Tag> tagList = new ArrayList<Tag>();
-    private int tagNumber = 100;
+    @Test
+    public void testPrepareData() throws Exception {
+        SysConfig.dbAddress="192.168.1.107:5432/mobi_prod";
+        int size = 10;
+        Simulator simulator = new Simulator(new DBReader(), size);
+        simulator.prepareData();
 
-    @Before
-    public void initTagList() {
+        List<Tag> tagList = simulator.getListOfTags();
 
-        for(int i = 1; i<tagNumber; i++ ) {
-            tagList.add(new Tag("Znacznik : " + i,"",0));
+        for(Tag s : tagList) {
+            System.out.println(s.toString());
         }
+
+        assertTrue(tagList.size() == size);
 
     }
 
-
     @Test
-    public void testPrepareData() throws Exception {
-        Simulator simulator = new Simulator(tagList);
-        simulator.prepareData();
+    public void test() {
+        SecureRandom random = new SecureRandom();
+        System.out.println((new BigInteger(130, random).toString(32)).substring(0,10).toUpperCase());
 
-//        List<Sections> sections = simulator.getListOfSections();
-//
-//        for(Sections s : sections) {
-//            System.out.println(s.toString());
-//        }
-//
-//        assertTrue(sections.size()>0);
 
     }
 

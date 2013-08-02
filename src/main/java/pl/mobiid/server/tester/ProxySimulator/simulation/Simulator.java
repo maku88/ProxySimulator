@@ -2,13 +2,16 @@ package pl.mobiid.server.tester.ProxySimulator.simulation;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
-import com.sun.xml.internal.txw2.DatatypeWriter;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.*;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.ScriptChecker;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.files.FileWriter;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,31 +24,38 @@ public class Simulator {
 
     private int tagNumber =0;
     private SectionsFactory sectionsFactory = new SectionsFactory();
-    @Getter private List<Sections> listOfSections = new ArrayList<Sections>();
-    private List<Tag> listOfTags = new ArrayList<Tag>();
+    @Getter private List<Tag> listOfTags = new ArrayList<Tag>();
     private RandomCollection<Sections> randomListOfSections = new RandomCollection<Sections>();
     private RandomCollection<Tag> randomListOfTags = new RandomCollection<Tag>();
     private List<SimulationResult> simulationResults = Collections.synchronizedList(new ArrayList());
     private DataWriter writer = new FileWriter("symulacja.txt");
     private ListMultimap<String, SimulationResult> tagReadResults = ArrayListMultimap.create();
+    private Logger log = Logger.getLogger("symLogger");
+    private ScriptChecker scriptChecker = new ScriptChecker();
 
-    public Simulator(List<Tag> tags) {
-       this.tagNumber = tags.size();
-       this.listOfTags = tags;
+    public Simulator(DataReader reader , int size) {
+       this.tagNumber = size;
+       loadTagList(reader,size);
+
+    }
+
+    private void loadTagList(DataReader reader , int size) {
+
+        List<Tag> list = reader.read();
+
+        Random random = new Random();
+
+        for(int i = 0; i<size ; i++) {
+            int index = random.nextInt(list.size());
+            Tag t = list.get(index);
+            list.remove(t);
+            listOfTags.add(t);
+        }
     }
 
 
-    public void prepareData() {
 
-//        listOfSections = sectionsFactory.generateSectionsForTags(listOfTags);
-//
-//        for(Sections s : listOfSections) {
-//            randomListOfSections.add(s.getProbability(),s);
-//        }
-//
-//        for(Sections s : listOfSections) {
-//            System.out.println(s.toString());
-//        }
+    public void prepareData() {
 
         TagFactory f = new TagFactory();
         listOfTags = f.generateProbability(listOfTags);
@@ -57,6 +67,13 @@ public class Simulator {
 
     }
 
+    public void endSymulation() {
+        //zapis podsumowania do logu
+        showResults();
+
+    }
+
+
     public Sections getRandomSection() {
         return randomListOfSections.next();
     }
@@ -66,7 +83,12 @@ public class Simulator {
     }
 
     public synchronized void addResult(SimulationResult result) {
-//        System.out.println("Adding : " +result.toString());
+
+        boolean isResponseCorrect  = scriptChecker.checkScript(result);
+        result.setResponseCorrect(isResponseCorrect);
+
+
+        log.info(result.toString());
         simulationResults.add(result);
         tagReadResults.put(result.getTag().getTagId(),result);
     }
@@ -93,10 +115,22 @@ public class Simulator {
 
             avgTime = avgTime/r.size();
 
-            System.out.println("tag: " + s + " odczytow : " + r.size() + " sr czas " + avgTime);
+            log.info("tag: " + s + " odczytow : " + r.size() + " sr czas " + avgTime);
         }
 
         for(Integer readCount : avgReadTimeMap.keySet()) {
+
+            List<Long> avgList = avgReadTimeMap.get(readCount);
+
+
+            long avgTime = 0;
+            for(Long l : avgList) {
+                avgTime+=l;
+            }
+
+            avgTime = avgTime/avgList.size();
+
+            log.info("odczyt " + readCount + " sr czas " + avgTime);
 
         }
 

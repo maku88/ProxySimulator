@@ -1,4 +1,7 @@
-package pl.mobiid.server.tester.ProxySimulator.simulation.data;
+package pl.mobiid.server.tester.ProxySimulator.simulation.data.files;
+
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.DataReader;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

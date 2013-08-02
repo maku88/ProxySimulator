@@ -22,6 +22,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 
+import org.apache.log4j.Logger;
 import pl.mobiid.server.tester.ProxySimulator.config.SysConfig;
 import pl.mobiid.server.tester.ProxySimulator.parser.GsonParserAdapter;
 import pl.mobiid.server.tester.ProxySimulator.parser.IJsonParser;
@@ -34,6 +35,7 @@ import pl.mobiid.shared.datatypes.communication.common.JsonHTTPActionToHandleReq
 import pl.mobiid.shared.datatypes.communication.common.JsonMessageResponse;
 import pl.mobiid.shared.datatypes.parameters.AndroidLocation;
 import pl.mobiid.shared.datatypes.parameters.PhoneParametersBundle;
+
 
 public class Conector extends NotifyingThread {
 
@@ -52,13 +54,12 @@ public class Conector extends NotifyingThread {
     private String endpoint = "";
     private List<Tag> tags = new ArrayList<Tag>();
     private Simulator simulator;
-
+    private Logger log = Logger.getLogger(Conector.class);
 
     public Conector(List<Tag> tags, String label, String endpoint, Simulator simulator) throws UnsupportedEncodingException {
 
         threadName += label;
         this.tags = tags;
-//        System.out.println(label);
         this.endpoint = endpoint;
         this.simulator = simulator;
     }
@@ -93,7 +94,7 @@ public class Conector extends NotifyingThread {
 
         String wsURL = endpoint;
 
-        System.out.println(tagId + " Connecting to web service: " + wsURL);
+        log.info(tagId + " Connecting to web service: " + wsURL);
 
         httpPost = new HttpPost(wsURL);
         httpPost.setEntity(jsonParser.parseToJsonSE(jsonHTTPActionToHandleRequest));
@@ -129,14 +130,14 @@ public class Conector extends NotifyingThread {
 
             HttpResponse response;
             response = httpclient.execute(httpUriRequest);
-            System.out.println(tagId + " HTTPClientTask: Connected with result code: " + response.getStatusLine().toString());
+//            log.info(tagId + " HTTPClientTask: Connected with result code: " + response.getStatusLine().toString());
 
             if (response != null) {
                 T responseObject = jsonParser.parseFromJson(handleResponse(response), type);
                 if (responseObject != null) {
                     return responseObject;
                 } else {
-                    System.out.println(threadName + " " + tagId + " Response is null!");
+                    log.error(threadName + " " + tagId + " Response is null!");
                 }
             }
         } catch (ClientProtocolException e) {
@@ -182,11 +183,12 @@ public class Conector extends NotifyingThread {
             try {
                 long start = new Date().getTime();
                 JsonActionToHandleResponse resp = sendActionRequest(tag.getTagId(), NetworkType.NETWORK_TYPE_GPRS, phoneParametersBundle, applicationVersion);
+                tag.incrementReadTime();
                 long end = new Date().getTime();
 
-                System.out.println(tag.getTagId() + " Time : " + ( end - start ) + " ms ");
+                log.info(tag.getTagId() + " Time : " + ( end - start ) + " ms ");
 
-                simulator.addResult(new SimulationResult(threadName,tag,start,end,(end-start),resp));
+                simulator.addResult(new SimulationResult(threadName,tag,start,end,(end-start),resp.getmScenario().toString() == null ? null : resp.getmScenario().toString()));
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

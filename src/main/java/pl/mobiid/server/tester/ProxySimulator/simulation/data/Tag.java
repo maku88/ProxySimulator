@@ -11,13 +11,27 @@ import lombok.ToString;
  * Time: 14:00
  * To change this template use File | Settings | File Templates.
  */
+
 @Data
-@AllArgsConstructor
 @ToString
 public class Tag {
 
     private String tagId;
     private String script;
     private double probability;
+    private int readCount;
+
+    public Tag(String tagId, String script, double probability) {
+        this.tagId = tagId;
+        this.script = script;
+        this.probability = probability;
+    }
+
+    public void incrementReadTime() {
+        readCount++;
+    }
+
+
+
 
 }
