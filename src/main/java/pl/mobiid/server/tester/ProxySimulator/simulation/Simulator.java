@@ -1,9 +1,12 @@
 package pl.mobiid.server.tester.ProxySimulator.simulation;
 
+import SymulationManager.manager.SimulationManager;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import lombok.Getter;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.*;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.ScriptChecker;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.files.FileWriter;
@@ -20,7 +23,12 @@ import java.util.Random;
  * Time: 19:32
  * To change this template use File | Settings | File Templates.
  */
+
+@Component
 public class Simulator {
+
+    @Autowired SimulationManager manager;
+
 
     private int tagNumber =0;
     private SectionsFactory sectionsFactory = new SectionsFactory();
@@ -32,11 +40,24 @@ public class Simulator {
     private ListMultimap<String, SimulationResult> tagReadResults = ArrayListMultimap.create();
     private Logger log = Logger.getLogger("symLogger");
     private ScriptChecker scriptChecker = new ScriptChecker();
+    private String simulatorID ;
 
-    public Simulator(DataReader reader , int size) {
+    public Simulator() {
+
+    }
+
+    public void setSimulation(DataReader reader , int size, String simulatorID) {
+        this.tagNumber = size;
+        loadTagList(reader,size);
+        this.simulatorID = simulatorID;
+        manager.registerSimulator(this.simulatorID);
+    }
+
+    public Simulator(DataReader reader , int size, String simulatorID) {
        this.tagNumber = size;
        loadTagList(reader,size);
-
+        this.simulatorID = simulatorID;
+        manager.registerSimulator(this.simulatorID);
     }
 
     private void loadTagList(DataReader reader , int size) {

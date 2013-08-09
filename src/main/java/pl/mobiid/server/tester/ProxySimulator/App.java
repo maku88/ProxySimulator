@@ -1,6 +1,10 @@
 package pl.mobiid.server.tester.ProxySimulator;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import pl.mobiid.server.tester.ProxySimulator.config.SysConfig;
 import pl.mobiid.server.tester.ProxySimulator.simulation.Simulator;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.*;
@@ -21,6 +25,7 @@ import java.util.Map;
  * Hello world!
  *
  */
+@Component
 public class App
 {
 
@@ -30,12 +35,21 @@ public class App
     private static String endpointProd = "http://smarttouch.mobi-id.pl/rest/open/actions";
     private static DataReader reader = new DBReader();
     private static Logger log = Logger.getLogger(App.class);
+    private static String[] startArguments;
 
+
+    @Autowired Simulator simulator;
 
     public static void main( String[] args )
     {
+        startArguments = args;
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        App p = context.getBean(App.class);
+        p.startSimulation(args);
+    }
 
-//        System.setProperty("http.proxySet", "true");
+    private void startSimulation(String[] args) {
+        //        System.setProperty("http.proxySet", "true");
 //        System.setProperty("http.proxyHost", "127.0.0.1");
 //        System.setProperty("http.proxyPort", "10000");
 
@@ -66,7 +80,8 @@ public class App
 
 
         if(endpoint != null ) {
-            Simulator simulator = new Simulator(reader, SysConfig.tagNumber );
+//            Simulator simulator = new Simulator(reader, SysConfig.tagNumber );
+            simulator.setSimulation(reader,SysConfig.tagNumber, Long.toString(SysConfig.simulationID));
             simulator.prepareData();
 
             ThreadCompleteListener listener = new ThreadListener();
