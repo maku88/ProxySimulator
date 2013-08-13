@@ -3,6 +3,7 @@ package pl.mobiid.server.tester.ProxySimulator.simulation.data.db;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.SimulationResult;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import java.sql.Statement;
  * Time: 22:40
  * To change this template use File | Settings | File Templates.
  */
-public class ScriptChecker {
+public class ScriptChecker implements Serializable {
 
     public boolean checkScript(SimulationResult result) {
         try {

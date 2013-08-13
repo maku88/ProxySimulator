@@ -5,6 +5,7 @@ import pl.mobiid.server.tester.ProxySimulator.simulation.data.DataReader;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.DBHelper;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

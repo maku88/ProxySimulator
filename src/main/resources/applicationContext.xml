@@ -2,19 +2,40 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:si="http://www.springframework.org/schema/integration"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <context:annotation-config />
     <context:component-scan base-package="pl.mobiid.server.tester.ProxySimulator"/>
 
-
+    <aop:config proxy-target-class="true"/>
 
     <bean id="accountService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
         <property name="serviceUrl" value="rmi://localhost:1199/SimulationManager"/>
-        <property name="serviceInterface" value="SymulationManager.manager.SimulationManager"/>
+        <property name="serviceInterface" value="SymulationManager.remote.SimulationManager"/>
     </bean>
+
+
+    <bean id="simulatorService" class="pl.mobiid.server.tester.ProxySimulator.RemoteSimulatorImpl">
+        <!-- any additional properties, maybe a DAO? -->
+    </bean>
+
+    <!--<bean class="org.springframework.remoting.rmi.RmiProxyFactoryBean">-->
+        <!--<property name="serviceUrl" value="rmi://localhost/Server" />-->
+        <!--&lt;!&ndash; does not necessarily have to be the same name as the bean to be exported &ndash;&gt;-->
+        <!--<property name="serviceInterface" value="pl.mobiid.server.tester.ProxySimulator.RemoteSimulator"/>-->
+    <!--</bean>-->
+
+
+    <!--<bean class="org.springframework.remoting.rmi.RmiServiceExporter">-->
+        <!--<property name="service" ref="simulatorService" />-->
+        <!--<property name="serviceInterface" value="pl.mobiid.server.tester.ProxySimulator.RemoteSimulator" />-->
+        <!--<property name="serviceName" value="simulatorService"/>-->
+        <!--<property name="registryPort" value="1199"/>-->
+    <!--</bean>-->
 
 
 </beans>

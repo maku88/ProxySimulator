@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.ToString;
 import pl.mobiid.shared.datatypes.communication.common.JsonActionToHandleResponse;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Maciek
@@ -13,7 +15,7 @@ import pl.mobiid.shared.datatypes.communication.common.JsonActionToHandleRespons
  * To change this template use File | Settings | File Templates.
  */
 @Data
-public class SimulationResult {
+public class SimulationResult implements Serializable {
 
     private String threadName;
     private Tag tag;
@@ -40,7 +42,7 @@ public class SimulationResult {
 
 
     public void setResponse(String response ) {
-        this.response = response.replace("mScenario=","");
+        if(response != null) this.response = response.replace("mScenario=","");
     }
 
 

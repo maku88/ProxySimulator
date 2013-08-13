@@ -2,7 +2,6 @@ package pl.mobiid.server.tester.ProxySimulator.threads;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -37,7 +36,7 @@ import pl.mobiid.shared.datatypes.parameters.AndroidLocation;
 import pl.mobiid.shared.datatypes.parameters.PhoneParametersBundle;
 
 
-public class Conector extends NotifyingThread {
+public class Connector {
 
     private static final String UTF_8 = "utf-8";
     private static final String PBE_ALGORITHM = "PBEWithMD5AndDES";
@@ -54,9 +53,9 @@ public class Conector extends NotifyingThread {
     private String endpoint = "";
     private List<Tag> tags = new ArrayList<Tag>();
     private Simulator simulator;
-    private Logger log = Logger.getLogger(Conector.class);
+    private Logger log = Logger.getLogger(Connector.class);
 
-    public Conector(List<Tag> tags, String label, String endpoint, Simulator simulator) throws UnsupportedEncodingException {
+    public Connector(List<Tag> tags, String label, String endpoint, Simulator simulator) throws UnsupportedEncodingException {
 
         threadName += label;
         this.tags = tags;
@@ -188,7 +187,7 @@ public class Conector extends NotifyingThread {
 
                 log.info(tag.getTagId() + " Time : " + ( end - start ) + " ms ");
 
-                simulator.addResult(new SimulationResult(threadName,tag,start,end,(end-start),resp.getmScenario().toString() == null ? null : resp.getmScenario().toString()));
+                simulator.addResult(new SimulationResult(threadName,tag,start,end,(end-start),resp.getmScenario() == null ? null : resp.getmScenario().toString()));
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

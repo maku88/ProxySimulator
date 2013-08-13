@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Maciek
@@ -14,7 +16,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class Tag {
+public class Tag implements Serializable {
 
     private String tagId;
     private String script;

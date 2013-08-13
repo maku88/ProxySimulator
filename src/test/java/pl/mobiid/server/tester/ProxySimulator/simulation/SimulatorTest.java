@@ -1,6 +1,8 @@
 package pl.mobiid.server.tester.ProxySimulator.simulation;
 
+import SymulationManager.remote.SimulationManager;
 import org.junit.Test;
+import org.mockito.Mockito;
 import pl.mobiid.server.tester.ProxySimulator.config.SysConfig;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.DBReader;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
@@ -22,9 +24,12 @@ public class SimulatorTest {
 
     @Test
     public void testPrepareData() throws Exception {
-        SysConfig.dbAddress="192.168.1.107:5432/mobi_prod";
+
+        SimulationManager mock = Mockito.mock(SimulationManager.class);
+
+        SysConfig.dbAddress="192.168.1.105:5432/mobi_prod";
         int size = 10;
-        Simulator simulator = new Simulator(new DBReader(), size);
+        Simulator simulator = new Simulator(new DBReader(), size,"123",mock);
         simulator.prepareData();
 
         List<Tag> tagList = simulator.getListOfTags();

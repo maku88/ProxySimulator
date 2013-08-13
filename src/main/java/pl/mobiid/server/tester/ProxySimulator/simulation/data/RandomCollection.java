@@ -1,5 +1,6 @@
 package pl.mobiid.server.tester.ProxySimulator.simulation.data;
 
+import java.io.Serializable;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -11,7 +12,7 @@ import java.util.TreeMap;
  * Time: 14:37
  * To change this template use File | Settings | File Templates.
  */
-public class RandomCollection<E> {
+public class RandomCollection<E> implements Serializable {
     private final NavigableMap<Double, E> map = new TreeMap<Double, E>();
     private final Random random;
     private double total = 0;

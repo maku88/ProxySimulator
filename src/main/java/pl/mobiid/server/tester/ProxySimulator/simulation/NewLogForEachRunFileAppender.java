@@ -20,7 +20,7 @@ import pl.mobiid.server.tester.ProxySimulator.config.SysConfig;
 
 public class NewLogForEachRunFileAppender extends FileAppender {
 
-    static {SysConfig.simulationID = System.currentTimeMillis(); }
+    static {SysConfig.logID = Long.toString(System.currentTimeMillis()); }
 
         public NewLogForEachRunFileAppender() {
         }
@@ -65,11 +65,11 @@ public class NewLogForEachRunFileAppender extends FileAppender {
                 if (dotIndex != -1) {
                     // the file name has an extension. so, insert the time stamp
                     // between the file name and the extension
-                    newFileName = fileName.substring(0, dotIndex) + HIPHEN + SysConfig.simulationID +  DOT + fileName.substring(dotIndex + 1);
+                    newFileName = fileName.substring(0, dotIndex) + HIPHEN + SysConfig.logID +  DOT + fileName.substring(dotIndex + 1);
                 } else {
                     // the file name has no extension. So, just append the timestamp
                     // at the end.
-                    newFileName = fileName + HIPHEN  + SysConfig.simulationID ;
+                    newFileName = fileName + HIPHEN  + SysConfig.logID ;
                 }
                 return logFile.getParent() +  File.separator  + newFileName;
             }

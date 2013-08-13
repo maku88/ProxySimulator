@@ -19,7 +19,7 @@ public class DBReaderTest {
     @Test
     public void testRead() throws Exception {
 
-        SysConfig.dbAddress="192.168.1.107:5432/mobi_prod";
+        SysConfig.dbAddress="192.168.1.105:5432/mobi_prod";
         DataReader reader = new DBReader();
 
         List<Tag> list = reader.read();

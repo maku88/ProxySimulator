@@ -1,20 +1,17 @@
 package pl.mobiid.server.tester.ProxySimulator.simulation;
 
-import SymulationManager.manager.SimulationManager;
+import SymulationManager.remote.SimulationManager;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import lombok.Getter;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.*;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.ScriptChecker;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.files.FileWriter;
+import pl.mobiid.server.tester.ProxySimulator.simulation.factory.TagFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,37 +24,40 @@ import java.util.Random;
 @Component
 public class Simulator {
 
-    @Autowired SimulationManager manager;
-
-
     private int tagNumber =0;
-    private SectionsFactory sectionsFactory = new SectionsFactory();
+    @Getter private int numberOfRequests = 0;
     @Getter private List<Tag> listOfTags = new ArrayList<Tag>();
-    private RandomCollection<Sections> randomListOfSections = new RandomCollection<Sections>();
     private RandomCollection<Tag> randomListOfTags = new RandomCollection<Tag>();
     private List<SimulationResult> simulationResults = Collections.synchronizedList(new ArrayList());
-    private DataWriter writer = new FileWriter("symulacja.txt");
     private ListMultimap<String, SimulationResult> tagReadResults = ArrayListMultimap.create();
+
+    private DataWriter writer = new FileWriter("symulacja.txt");
     private Logger log = Logger.getLogger("symLogger");
     private ScriptChecker scriptChecker = new ScriptChecker();
     private String simulatorID ;
+    private int simulationID;
 
     public Simulator() {
 
     }
 
-    public void setSimulation(DataReader reader , int size, String simulatorID) {
+    public void setupSimulation(DataReader reader, int size, String simulatorID, int numberOfRequests, int simulationID) {
+        listOfTags.clear();
+        randomListOfTags = new RandomCollection<Tag>();
+        simulationResults.clear();
+        tagReadResults.clear();
         this.tagNumber = size;
-        loadTagList(reader,size);
+        loadTagList(reader,tagNumber);
         this.simulatorID = simulatorID;
-        manager.registerSimulator(this.simulatorID);
+        this.simulationID = simulationID;
+        this.numberOfRequests = numberOfRequests;
     }
 
-    public Simulator(DataReader reader , int size, String simulatorID) {
+    public Simulator(DataReader reader , int size, String simulatorID, SimulationManager manager) {
        this.tagNumber = size;
-       loadTagList(reader,size);
+       loadTagList(reader,tagNumber);
         this.simulatorID = simulatorID;
-        manager.registerSimulator(this.simulatorID);
+//        manager.registerSimulator(this.simulatorID);
     }
 
     private void loadTagList(DataReader reader , int size) {
@@ -75,7 +75,6 @@ public class Simulator {
     }
 
 
-
     public void prepareData() {
 
         TagFactory f = new TagFactory();
@@ -88,16 +87,12 @@ public class Simulator {
 
     }
 
-    public void endSymulation() {
-        //zapis podsumowania do logu
+    public void endSimulation(SimulationManager manager) {
+        writeLogFile();
         showResults();
-
+        manager.reportFinish(simulatorID,calculateReadStats(tagReadResults),calculateMistakesStats(simulationResults),simulationID);
     }
 
-
-    public Sections getRandomSection() {
-        return randomListOfSections.next();
-    }
 
     public Tag getRandomTag() {
         return randomListOfTags.next();
@@ -119,6 +114,54 @@ public class Simulator {
         writer.write(simulationResults);
     }
 
+
+    Map<Integer,Long> calculateReadStats(ListMultimap<String, SimulationResult> tagReadResults) {
+
+        Map<Integer,Long> reutrnMap = new HashMap<Integer, Long>();
+
+        ListMultimap<Integer, Long> avgReadTimeMap = ArrayListMultimap.create();
+
+        for(String tagID : tagReadResults.keySet()) {
+            List<SimulationResult> tagResults = tagReadResults.get(tagID);
+
+            for(int i = 0 ; i<tagResults.size() ; i++ ) {
+                avgReadTimeMap.put(i + 1, tagResults.get(i).getDuration());
+            }
+        }
+
+
+        //wyliczam sredni czas odczytow
+        for(Integer readCount : avgReadTimeMap.keySet()) {
+
+            List<Long> avgList = avgReadTimeMap.get(readCount);
+
+            long avgTime = 0;
+            for(Long l : avgList) {
+                avgTime+=l;
+            }
+
+            avgTime = avgTime/avgList.size();
+
+            reutrnMap.put(readCount,avgTime);
+        }
+
+        return reutrnMap;
+
+    }
+
+
+    int calculateMistakesStats(List<SimulationResult> simulationResults) {
+
+        int numberOfMistakes = 0;
+
+        for(SimulationResult result : simulationResults) {
+            if(result.isResponseCorrect() == false ) numberOfMistakes++;
+        }
+
+        return numberOfMistakes;
+    }
+
+
     public void showResults() {
         ListMultimap<Integer, Long> avgReadTimeMap = ArrayListMultimap.create();
 
@@ -129,6 +172,7 @@ public class Simulator {
                avgReadTimeMap.put(i+1,r.get(i).getDuration());
             }
 
+            //wyliczam sredni czas odczytow na znaczniku
             long avgTime = 0;
             for(SimulationResult sr : r) {
                 avgTime+=sr.getDuration();
@@ -178,10 +222,6 @@ public class Simulator {
 ////        System.out.println("---- " + (i-1));
 //        System.out.println(listOfSections.get(i - 1).toString());
     }
-
-
-
-
 
 //    private boolean countNumbers(int lastNumber) {
 //        int sum = 0;

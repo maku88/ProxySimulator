@@ -1,5 +1,6 @@
 package pl.mobiid.server.tester.ProxySimulator.data.generator;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.sql.*;
@@ -11,7 +12,7 @@ import java.sql.*;
  * Time: 00:09
  * To change this template use File | Settings | File Templates.
  */
-public class DataGenerator {
+public class DataGenerator implements Serializable {
     private static SecureRandom random = new SecureRandom();
     private static int counter=10;
 

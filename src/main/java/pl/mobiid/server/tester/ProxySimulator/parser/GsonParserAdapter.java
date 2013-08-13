@@ -3,6 +3,7 @@ package pl.mobiid.server.tester.ProxySimulator.parser;
 
 
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 
@@ -16,7 +17,7 @@ import com.google.gson.Gson;
  * @author Sebastian
  *
  */
-public class GsonParserAdapter implements IJsonParser {
+public class GsonParserAdapter implements IJsonParser, Serializable {
 
 
 	public static Gson gson = new Gson();

@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class ScriptCheckerTest {
     @Test
     public void testCheckScript() throws Exception {
-       SysConfig.dbAddress="192.168.1.107:5432/mobi_prod";
+       SysConfig.dbAddress="192.168.1.105:5432/mobi_prod";
        ScriptChecker checker = new ScriptChecker();
 
         Tag t = new Tag("TROM92590K","aaa",0);

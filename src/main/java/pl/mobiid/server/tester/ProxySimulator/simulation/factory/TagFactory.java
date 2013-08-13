@@ -1,5 +1,6 @@
-package pl.mobiid.server.tester.ProxySimulator.simulation;
+package pl.mobiid.server.tester.ProxySimulator.simulation.factory;
 
+import pl.mobiid.server.tester.ProxySimulator.simulation.RandomGenerator;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
 
 import java.util.List;
