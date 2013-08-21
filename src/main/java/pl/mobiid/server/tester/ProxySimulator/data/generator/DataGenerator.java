@@ -19,7 +19,7 @@ public class DataGenerator implements Serializable {
 
     public static void main(String[] args) throws ClassNotFoundException {
 
-        for(int i = 0; i<100;i++) {
+        for(int i = 0; i<1000;i++) {
             insertIntoDB(generateTag(),generateScript(),generateCampaignName());
         }
 
@@ -56,7 +56,7 @@ public class DataGenerator implements Serializable {
         ResultSet rs = null;
 
 
-        String url = "jdbc:postgresql://192.168.1.107:5432/mobi_prod";
+        String url = "jdbc:postgresql://192.168.1.114:5432/mobi";
         String user = "postgres";
         String password = "niewiem2009";
 

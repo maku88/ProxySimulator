@@ -14,7 +14,7 @@
     <aop:config proxy-target-class="true"/>
 
     <bean id="accountService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-        <property name="serviceUrl" value="rmi://localhost:1199/SimulationManager"/>
+        <property name="serviceUrl" value="rmi://192.168.1.106:1199/SimulationManager"/>
         <property name="serviceInterface" value="SymulationManager.remote.SimulationManager"/>
     </bean>
 

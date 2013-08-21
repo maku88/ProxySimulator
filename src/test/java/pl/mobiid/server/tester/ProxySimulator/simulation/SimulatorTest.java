@@ -22,25 +22,25 @@ import static org.junit.Assert.*;
  */
 public class SimulatorTest {
 
-    @Test
-    public void testPrepareData() throws Exception {
-
-        SimulationManager mock = Mockito.mock(SimulationManager.class);
-
-        SysConfig.dbAddress="192.168.1.105:5432/mobi_prod";
-        int size = 10;
-        Simulator simulator = new Simulator(new DBReader(), size,"123",mock);
-        simulator.prepareData();
-
-        List<Tag> tagList = simulator.getListOfTags();
-
-        for(Tag s : tagList) {
-            System.out.println(s.toString());
-        }
-
-        assertTrue(tagList.size() == size);
-
-    }
+//    @Test
+//    public void testPrepareData() throws Exception {
+//
+//        SimulationManager mock = Mockito.mock(SimulationManager.class);
+//
+//        SysConfig.dbAddress="192.168.1.111:5432/mobi_prod";
+//        int size = 10;
+//        Simulator simulator = new Simulator(new DBReader(), size,"123",mock);
+//        simulator.prepareData();
+//
+//        List<Tag> tagList = simulator.getListOfTags();
+//
+//        for(Tag s : tagList) {
+//            System.out.println(s.toString());
+//        }
+//
+//        assertTrue(tagList.size() == size);
+//
+//    }
 
     @Test
     public void test() {
