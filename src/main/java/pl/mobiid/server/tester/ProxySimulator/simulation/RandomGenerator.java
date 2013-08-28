@@ -19,7 +19,8 @@ public class RandomGenerator {
      }
 
     public double getRandomDouble() {
-        return round(random.nextDouble(),2);
+
+        return round((random.nextGaussian()*0.2)+0.5,2);
     }
 
     public double round(double value, int places) {

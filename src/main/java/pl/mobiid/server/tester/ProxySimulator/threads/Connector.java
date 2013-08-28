@@ -124,8 +124,9 @@ public class Connector {
         DefaultHttpClient httpclient = new DefaultHttpClient(httpParams);
         try {
 
-
-            httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
+            if(SysConfig.proxyEnabled) {
+                httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
+            }
 
             HttpResponse response;
             response = httpclient.execute(httpUriRequest);

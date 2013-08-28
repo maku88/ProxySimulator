@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface DataWriter {
 
-    public void write(List<SimulationResult> resultList);
+    public void write(List<SimulationResult> resultList, String fileName);
 }

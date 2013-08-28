@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.*;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.db.ScriptChecker;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.files.FileWriter;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.files.TagWriter;
 import pl.mobiid.server.tester.ProxySimulator.simulation.factory.TagFactory;
 
 import java.util.*;
@@ -31,7 +32,7 @@ public class Simulator {
     private List<SimulationResult> simulationResults = Collections.synchronizedList(new ArrayList());
     private ListMultimap<String, SimulationResult> tagReadResults = ArrayListMultimap.create();
 
-    private DataWriter writer = new FileWriter("symulacja.txt");
+    private DataWriter writer = new FileWriter();
     private Logger log = Logger.getLogger("symLogger");
     private ScriptChecker scriptChecker = new ScriptChecker();
     private String simulatorID ;
@@ -110,8 +111,8 @@ public class Simulator {
     }
 
     public void writeLogFile() {
-        System.out.println("size : " + simulationResults.size());
-        writer.write(simulationResults);
+        log.info("WRITING LOG FILES");
+        writer.write(simulationResults,"symulacja_" + simulationID+ "_"+ new Date().getTime()+".txt");
     }
 
 

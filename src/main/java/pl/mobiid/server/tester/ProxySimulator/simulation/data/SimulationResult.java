@@ -36,7 +36,7 @@ public class SimulationResult implements Serializable {
     }
 
     public String getString() {
-        return  "RES;"+tag.getTagId() + ";" + startTimestamp +";" + endTimestamp +";" + duration + ";" + isResponseCorrect;
+        return  "RES;"+tag.getTagId() + ";" +tag.getProbability()+";"+tag.getReadCount() + ";"+ startTimestamp +";" + endTimestamp +";" + duration + ";" + isResponseCorrect;
     }
 
 

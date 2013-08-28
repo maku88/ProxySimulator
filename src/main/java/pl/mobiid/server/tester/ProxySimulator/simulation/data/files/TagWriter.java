@@ -1,26 +1,28 @@
 package pl.mobiid.server.tester.ProxySimulator.simulation.data.files;
 
-import pl.mobiid.server.tester.ProxySimulator.simulation.data.DataWriter;
 import pl.mobiid.server.tester.ProxySimulator.simulation.data.SimulationResult;
+import pl.mobiid.server.tester.ProxySimulator.simulation.data.Tag;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Maciek
- * Date: 24.07.13
- * Time: 15:06
+ * Date: 25.08.13
+ * Time: 17:01
  * To change this template use File | Settings | File Templates.
  */
-public class FileWriter implements DataWriter {
+public class TagWriter {
 
-    public void write(List<SimulationResult> resultList, String fileName) {
+    public void write(List<Tag> resultList, String fileName) {
 
         try {
             PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-            for(SimulationResult result : resultList) {
-                writer.println(result.getString());
+            for(Tag t : resultList) {
+                writer.println(t.getString());
             }
             writer.flush();
             writer.close();
@@ -32,6 +34,5 @@ public class FileWriter implements DataWriter {
         }
 
     }
-
 
 }

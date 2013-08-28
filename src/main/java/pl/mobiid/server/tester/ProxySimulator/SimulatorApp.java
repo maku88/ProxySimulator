@@ -79,6 +79,8 @@ public class SimulatorApp implements Serializable
 
         if(args[4].equals("single")) {
             startSimulation(Integer.parseInt(args[5]), Integer.parseInt(args[6]), 1);
+        } if(args[4].equals("noProxy")) {
+            SysConfig.proxyEnabled = false;
         }
 
         simulationRunner  = new SimulationRunner();

@@ -20,6 +20,7 @@ public class SysConfig implements Serializable{
     public static int numberOfRequests = 1000;
     public static String simulatorID;
     public static String logID;
+    public static boolean proxyEnabled = true;
 
     public static String printConfig() {
         return "\n"

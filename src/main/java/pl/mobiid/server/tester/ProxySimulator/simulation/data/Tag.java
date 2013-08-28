@@ -29,6 +29,12 @@ public class Tag implements Serializable {
         this.probability = probability;
     }
 
+
+    public String getString() {
+        return "aa;" +tagId+";"+probability+";"+"a;a;a;"+readCount+";"+true;
+    }
+
+
     public void incrementReadTime() {
         readCount++;
     }
